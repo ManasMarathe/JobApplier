@@ -37,6 +37,13 @@ from config.questions import *
 from config.search import *
 from config.secrets import use_AI, username, password, ai_provider
 from config.settings import *
+from config.custom_questions import (
+    CUSTOM_TEXT_QUESTIONS, 
+    CUSTOM_SELECT_QUESTIONS, 
+    CUSTOM_RADIO_QUESTIONS, 
+    CUSTOM_TEXTAREA_QUESTIONS,
+    AI_PREFERRED_QUESTIONS
+)
 
 from modules.open_chrome import *
 from modules.helpers import *
@@ -64,6 +71,9 @@ first_name = first_name.strip()
 middle_name = middle_name.strip()
 last_name = last_name.strip()
 full_name = first_name + " " + middle_name + " " + last_name if middle_name else first_name + " " + last_name
+
+# Create phone number without country code for forms that need it
+phone_number_clean = phone_number.replace("+91", "").replace("+", "").replace("-", "").replace(" ", "").strip()
 
 useNewResume = True
 randomly_answered_questions = set()
@@ -419,6 +429,34 @@ def upload_resume(modal: WebElement, resume: str) -> tuple[bool, str]:
         return True, os.path.basename(default_resume_path)
     except: return False, "Previous resume"
 
+# Function to check custom questions first
+def check_custom_question(label: str, question_type: str) -> str | None:
+    '''
+    Check if question matches any custom question patterns
+    Returns answer if found, None otherwise
+    '''
+    label_lower = label.lower()
+    
+    # Select appropriate dictionary based on question type
+    if question_type == "text":
+        questions_dict = CUSTOM_TEXT_QUESTIONS
+    elif question_type == "select":
+        questions_dict = CUSTOM_SELECT_QUESTIONS
+    elif question_type == "radio":
+        questions_dict = CUSTOM_RADIO_QUESTIONS
+    elif question_type == "textarea":
+        questions_dict = CUSTOM_TEXTAREA_QUESTIONS
+    else:
+        return None
+    
+    # Check for exact matches first
+    for keyword, answer in questions_dict.items():
+        if keyword.lower() in label_lower:
+            print_lg(f'Found custom answer for "{label}" using keyword "{keyword}"')
+            return answer
+    
+    return None
+
 # Function to answer common questions for Easy Apply
 def answer_common_questions(label: str, answer: str) -> str:
     if 'sponsorship' in label or 'visa' in label: answer = require_visa
@@ -456,7 +494,13 @@ def answer_questions(modal: WebElement, questions_list: set, work_location: str,
             prev_answer = selected_option
             if overwrite_previous_answers or selected_option == "Select an option":
                 ##> ------ WINDY_WINDWARD Email:karthik.sarode23@gmail.com - Added fuzzy logic to answer location based questions ------
-                if 'email' in label or 'phone' in label: 
+                # Check custom questions first
+                custom_answer = check_custom_question(label, "select")
+                if custom_answer:
+                    answer = custom_answer
+                elif 'email' in label: 
+                    answer = email
+                elif 'phone' in label: 
                     answer = prev_answer
                 elif 'gender' in label or 'sex' in label: 
                     answer = gender
@@ -537,7 +581,11 @@ def answer_questions(modal: WebElement, questions_list: set, work_location: str,
                 label_org += f' {options_labels[-1]},'
 
             if overwrite_previous_answers or prev_answer is None:
-                if 'citizenship' in label or 'employment eligibility' in label: answer = us_citizenship
+                # Check custom questions first
+                custom_answer = check_custom_question(label, "radio")
+                if custom_answer:
+                    answer = custom_answer
+                elif 'citizenship' in label or 'employment eligibility' in label: answer = us_citizenship
                 elif 'veteran' in label or 'protected' in label: answer = veteran_status
                 elif 'disability' in label or 'handicapped' in label: 
                     answer = disability_status
@@ -584,8 +632,13 @@ def answer_questions(modal: WebElement, questions_list: set, work_location: str,
 
             prev_answer = text.get_attribute("value")
             if not prev_answer or overwrite_previous_answers:
-                if 'experience' in label or 'years' in label: answer = years_of_experience
-                elif 'phone' in label or 'mobile' in label: answer = phone_number
+                # Check custom questions first
+                custom_answer = check_custom_question(label, "text")
+                if custom_answer:
+                    answer = custom_answer
+                elif 'email' in label or 'e-mail' in label: answer = email
+                elif 'experience' in label or 'years' in label: answer = years_of_experience
+                elif 'phone' in label or 'mobile' in label: answer = phone_number_clean
                 elif 'street' in label: answer = street
                 elif 'city' in label or 'location' in label or 'address' in label:
                     answer = current_city if current_city else work_location
@@ -672,7 +725,11 @@ def answer_questions(modal: WebElement, questions_list: set, work_location: str,
             answer = ""
             prev_answer = text_area.get_attribute("value")
             if not prev_answer or overwrite_previous_answers:
-                if 'summary' in label: answer = linkedin_summary
+                # Check custom questions first
+                custom_answer = check_custom_question(label, "textarea")
+                if custom_answer:
+                    answer = custom_answer
+                elif 'summary' in label: answer = linkedin_summary
                 elif 'cover' in label: answer = cover_letter
                 if answer == "":
                 ##> ------ Yang Li : MARKYangL - Feature ------
@@ -827,14 +884,10 @@ def submitted_jobs(job_id: str, title: str, company: str, work_location: str, wo
     '''
     try:
         with open(file_name, mode='a', newline='', encoding='utf-8') as csv_file:
-            fieldnames = ['Job ID', 'Title', 'Company', 'Work Location', 'Work Style', 'About Job', 'Experience required', 'Skills required', 'HR Name', 'HR Link', 'Resume', 'Re-posted', 'Date Posted', 'Date Applied', 'Job Link', 'External Job link', 'Questions Found', 'Connect Request']
+            fieldnames = ['Title', 'Company']
             writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
             if csv_file.tell() == 0: writer.writeheader()
-            writer.writerow({'Job ID':truncate_for_csv(job_id), 'Title':truncate_for_csv(title), 'Company':truncate_for_csv(company), 'Work Location':truncate_for_csv(work_location), 'Work Style':truncate_for_csv(work_style), 
-                            'About Job':truncate_for_csv(description), 'Experience required': truncate_for_csv(experience_required), 'Skills required':truncate_for_csv(skills), 
-                                'HR Name':truncate_for_csv(hr_name), 'HR Link':truncate_for_csv(hr_link), 'Resume':truncate_for_csv(resume), 'Re-posted':truncate_for_csv(reposted), 
-                                'Date Posted':truncate_for_csv(date_listed), 'Date Applied':truncate_for_csv(date_applied), 'Job Link':truncate_for_csv(job_link), 
-                                'External Job link':truncate_for_csv(application_link), 'Questions Found':truncate_for_csv(questions_list), 'Connect Request':truncate_for_csv(connect_request)})
+            writer.writerow({'Title':truncate_for_csv(title), 'Company':truncate_for_csv(company)})
         csv_file.close()
     except Exception as e:
         print_lg("Failed to update submitted jobs list!", e)
