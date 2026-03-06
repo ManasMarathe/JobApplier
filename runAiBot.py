@@ -52,6 +52,8 @@ from modules.validator import validate_config
 from modules.ai.openaiConnections import ai_create_openai_client, ai_extract_skills, ai_answer_question, ai_close_openai_client
 from modules.ai.deepseekConnections import deepseek_create_client, deepseek_extract_skills, deepseek_answer_question
 from modules.ai.geminiConnections import gemini_create_client, gemini_extract_skills, gemini_answer_question
+from modules.ai.claudeConnections import claude_create_client, claude_answer_question
+from modules.ai.qa_cache import lookup_cache, save_to_cache
 
 from typing import Literal
 
@@ -462,6 +464,60 @@ def answer_common_questions(label: str, answer: str) -> str:
     if 'sponsorship' in label or 'visa' in label: answer = require_visa
     return answer
 
+##> ------ Manas Marathe : ManasMarathe - Feature ------
+def load_resume_text(resume_path: str) -> str:
+    '''
+    Extract text from a PDF resume file to use as AI context.
+    * Takes in `resume_path` of type `str` - Path to the PDF resume
+    * Returns extracted text string, or empty string on failure
+    '''
+    try:
+        from pypdf import PdfReader
+        reader = PdfReader(resume_path)
+        text = "\n".join(page.extract_text() or "" for page in reader.pages)
+        return text.strip()
+    except Exception as e:
+        print_lg(f'Failed to read resume PDF "{resume_path}": {e}')
+        return ""
+
+
+def ai_fallback_answer_question(question: str, options: list[str] | None, question_type: str, job_description: str | None = None) -> str | None:
+    '''
+    Answers a question the ruleset couldn't handle. Checks the QA cache first, then calls AI.
+    Saves successful AI answers back to the cache to reduce future API costs.
+    * Takes in `question` of type `str` - The question label
+    * Takes in `options` of type `list[str] | None` - Available options for select/radio questions
+    * Takes in `question_type` of type `str` - One of "text", "textarea", "single_select"
+    * Takes in `job_description` of type `str | None` - Job description for context
+    * Returns `str` with the answer, or `None` if unavailable
+    '''
+    # Check QA cache first
+    cached = lookup_cache(question, question_type)
+    if cached:
+        return cached
+
+    if not use_AI or not aiClient:
+        return None
+    try:
+        if ai_provider.lower() == "openai":
+            result = ai_answer_question(aiClient, question, options=options, question_type=question_type, job_description=job_description, user_information_all=user_information_all)
+        elif ai_provider.lower() == "deepseek":
+            result = deepseek_answer_question(aiClient, question, options=options, question_type=question_type, job_description=job_description, about_company=None, user_information_all=user_information_all)
+        elif ai_provider.lower() == "gemini":
+            result = gemini_answer_question(aiClient, question, options=options, question_type=question_type, job_description=job_description, about_company=None, user_information_all=user_information_all)
+        elif ai_provider.lower() == "claude":
+            result = claude_answer_question(aiClient, question, options=options, question_type=question_type, job_description=job_description, about_company=None, user_information_all=user_information_all)
+        else:
+            return None
+        if result and isinstance(result, str) and result.strip():
+            answer = result.strip()
+            print_lg(f'Fallback AI answered "{question}": "{answer}"')
+            save_to_cache(question, question_type, answer)
+            return answer
+    except Exception as e:
+        print_lg(f'Fallback AI failed for question "{question}": {e}')
+    return None
+##<
 
 # Function to answer the questions for Easy Apply
 def answer_questions(modal: WebElement, questions_list: set, work_location: str, job_description: str | None = None ) -> set:
@@ -550,11 +606,22 @@ def answer_questions(modal: WebElement, questions_list: set, work_location: str,
                                 foundOption = True
                                 break
                     if not foundOption:
-                        #TODO: Use AI to answer the question need to be implemented logic to extract the options for the question
-                        print_lg(f'Failed to find an option with text "{answer}" for question labelled "{label_org}", answering randomly!')
-                        select.select_by_index(randint(1, len(select.options)-1))
-                        answer = select.first_selected_option.text
-                        randomly_answered_questions.add((f'{label_org} [ {options} ]',"select"))
+                        ai_answer = ai_fallback_answer_question(label_org, optionsText, "single_select", job_description)
+                        if ai_answer:
+                            for option_text in optionsText:
+                                if ai_answer.lower() in option_text.lower() or option_text.lower() in ai_answer.lower():
+                                    try:
+                                        select.select_by_visible_text(option_text)
+                                        answer = option_text
+                                        foundOption = True
+                                        print_lg(f'Fallback AI selected "{answer}" for select question "{label_org}"')
+                                        break
+                                    except Exception: pass
+                        if not foundOption:
+                            print_lg(f'Failed to find an option with text "{answer}" for question labelled "{label_org}", answering randomly!')
+                            select.select_by_index(randint(1, len(select.options)-1))
+                            answer = select.first_selected_option.text
+                            randomly_answered_questions.add((f'{label_org} [ {options} ]',"select"))
             questions_list.add((f'{label_org} [ {options} ]', answer, "select", prev_answer))
             continue
         
@@ -605,14 +672,17 @@ def answer_questions(modal: WebElement, questions_list: set, work_location: str,
                                 answer = f'Decline ({option_label})' if len(possible_answer_phrases) > 1 else option_label
                                 break
                         if foundOption: break
-                    # if answer == 'Decline':
-                    #     answer = options_labels[0]
-                    #     for phrase in ["Prefer not", "not want", "not wish"]:
-                    #         foundOption = try_xp(radio, f".//label[normalize-space()='{phrase}']", False)
-                    #         if foundOption:
-                    #             answer = f'Decline ({phrase})'
-                    #             ele = foundOption
-                    #             break
+                    if not foundOption:
+                        clean_labels = [ol.split('"')[1] if '"' in ol else ol for ol in options_labels]
+                        ai_answer = ai_fallback_answer_question(label_org.rstrip(' [').strip(), clean_labels, "single_select", job_description)
+                        if ai_answer:
+                            for i, clean_label in enumerate(clean_labels):
+                                if ai_answer.lower() in clean_label.lower() or clean_label.lower() in ai_answer.lower():
+                                    ele = options[i]
+                                    answer = options_labels[i]
+                                    foundOption = options[i]
+                                    print_lg(f'Fallback AI selected "{clean_label}" for radio question "{label_org}"')
+                                    break
                     actions.move_to_element(ele).click().perform()
                     if not foundOption: randomly_answered_questions.add((f'{label_org} ]',"radio"))
             else: answer = prev_answer
@@ -683,26 +753,9 @@ def answer_questions(modal: WebElement, questions_list: set, work_location: str,
                 else: answer = answer_common_questions(label,answer)
                 ##> ------ Yang Li : MARKYangL - Feature ------
                 if answer == "":
-                    if use_AI and aiClient:
-                        try:
-                            if ai_provider.lower() == "openai":
-                                answer = ai_answer_question(aiClient, label_org, question_type="text", job_description=job_description, user_information_all=user_information_all)
-                            elif ai_provider.lower() == "deepseek":
-                                answer = deepseek_answer_question(aiClient, label_org, options=None, question_type="text", job_description=job_description, about_company=None, user_information_all=user_information_all)
-                            elif ai_provider.lower() == "gemini":
-                                answer = gemini_answer_question(aiClient, label_org, options=None, question_type="text", job_description=job_description, about_company=None, user_information_all=user_information_all)
-                            else:
-                                randomly_answered_questions.add((label_org, "text"))
-                                answer = years_of_experience
-                            if answer and isinstance(answer, str) and len(answer) > 0:
-                                print_lg(f'AI Answered received for question "{label_org}" \nhere is answer: "{answer}"')
-                            else:
-                                randomly_answered_questions.add((label_org, "text"))
-                                answer = years_of_experience
-                        except Exception as e:
-                            print_lg("Failed to get AI answer!", e)
-                            randomly_answered_questions.add((label_org, "text"))
-                            answer = years_of_experience
+                    ai_answer = ai_fallback_answer_question(label_org, None, "text", job_description)
+                    if ai_answer:
+                        answer = ai_answer
                     else:
                         randomly_answered_questions.add((label_org, "text"))
                         answer = years_of_experience
@@ -733,26 +786,9 @@ def answer_questions(modal: WebElement, questions_list: set, work_location: str,
                 elif 'cover' in label: answer = cover_letter
                 if answer == "":
                 ##> ------ Yang Li : MARKYangL - Feature ------
-                    if use_AI and aiClient:
-                        try:
-                            if ai_provider.lower() == "openai":
-                                answer = ai_answer_question(aiClient, label_org, question_type="textarea", job_description=job_description, user_information_all=user_information_all)
-                            elif ai_provider.lower() == "deepseek":
-                                answer = deepseek_answer_question(aiClient, label_org, options=None, question_type="textarea", job_description=job_description, about_company=None, user_information_all=user_information_all)
-                            elif ai_provider.lower() == "gemini":
-                                answer = gemini_answer_question(aiClient, label_org, options=None, question_type="textarea", job_description=job_description, about_company=None, user_information_all=user_information_all)
-                            else:
-                                randomly_answered_questions.add((label_org, "textarea"))
-                                answer = ""
-                            if answer and isinstance(answer, str) and len(answer) > 0:
-                                print_lg(f'AI Answered received for question "{label_org}" \nhere is answer: "{answer}"')
-                            else:
-                                randomly_answered_questions.add((label_org, "textarea"))
-                                answer = ""
-                        except Exception as e:
-                            print_lg("Failed to get AI answer!", e)
-                            randomly_answered_questions.add((label_org, "textarea"))
-                            answer = ""
+                    ai_answer = ai_fallback_answer_question(label_org, None, "textarea", job_description)
+                    if ai_answer:
+                        answer = ai_answer
                     else:
                         randomly_answered_questions.add((label_org, "textarea"))
             text_area.clear()
@@ -1204,6 +1240,14 @@ def main() -> None:
         #         chatGPT_tab = driver.current_window_handle
         #     except Exception as e:
         #         print_lg("Opening OpenAI chatGPT tab failed!")
+        ##> ------ Manas Marathe : ManasMarathe - Feature ------
+        # Load resume text as AI context
+        global user_information_all
+        resume_text = load_resume_text(default_resume_path)
+        if resume_text:
+            user_information_all = resume_text
+            print_lg(f"Loaded resume as AI context ({len(resume_text)} chars)")
+        ##<
         if use_AI:
             if ai_provider == "openai":
                 aiClient = ai_create_openai_client()
@@ -1213,6 +1257,10 @@ def main() -> None:
                 aiClient = deepseek_create_client()
             elif ai_provider == "gemini":
                 aiClient = gemini_create_client()
+            ##<
+            ##> ------ Manas Marathe : ManasMarathe - Feature ------
+            elif ai_provider == "claude":
+                aiClient = claude_create_client()
             ##<
 
             try:

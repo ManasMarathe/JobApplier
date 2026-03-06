@@ -47,19 +47,34 @@ All user-specific configuration lives here. These files are in `.gitignore` and 
 - `open_chrome.py` — launches Chrome/undetected-chromedriver
 - `clickers_and_finders.py` — Selenium helpers for finding and interacting with page elements
 - `validator.py` — validates all config variables on startup
-- `resumes/` — resume handling logic
+- `resumes/extractor.py` — resume handling logic
 - `ai/geminiConnections.py` — Gemini API client (`gemini_create_client`, `gemini_completion`, `gemini_extract_skills`, `gemini_answer_question`)
 - `ai/deepseekConnections.py` — DeepSeek client via OpenAI-compatible API (same interface pattern)
+- `ai/openaiConnections.py` — OpenAI client (`ai_create_openai_client`, `ai_answer_question`, `ai_extract_skills`)
+- `ai/claudeConnections.py` — Anthropic Claude client (`claude_create_client`, `claude_answer_question`); set `ai_provider = "claude"` and `llm_model = "claude-haiku-4-5-20251001"` with Anthropic key in `llm_api_key`
+- `ai/qa_cache.py` — persistent Q&A cache (`lookup_cache`, `save_to_cache`); saves AI answers to `all excels/ai_qa_cache.json` and checks it before every AI call to reduce costs
 - `ai/prompts.py` — prompt templates shared across AI providers (`extract_skills_prompt`, `ai_answer_prompt`, `deepseek_extract_skills_prompt`)
 
 ### AI Integration
-AI is opt-in via `use_AI = True` in `config/secrets.py`. Both Gemini and DeepSeek providers share the same prompt templates from `modules/ai/prompts.py`. The AI is used to extract skills from job descriptions and answer unknown application questions.
+AI is opt-in via `use_AI = True` in `config/secrets.py`. Supported providers: `"openai"`, `"deepseek"`, `"gemini"`, `"claude"`. All share prompt templates from `modules/ai/prompts.py`.
+
+The fallback flow for unanswered questions (in `runAiBot.py:ai_fallback_answer_question()`):
+1. Check `all excels/ai_qa_cache.json` — return cached answer if found (free)
+2. Call AI provider with resume as context (`user_information_all` loaded from PDF at startup)
+3. Save successful answer to cache for future runs
+4. If AI fails, fall back to random/default answer
+
+Resume PDF is read at bot startup via `load_resume_text()` and set as `user_information_all` for all AI calls.
 
 ### Output Files
 - `all excels/all_applied_applications_history.csv` — every applied job
 - `all excels/all_failed_applications_history.csv` — failed applications
 - `logs/` — run logs
 - `bot_output.log` — stdout log from last run
+
+## CLAUDE.md Maintenance
+
+After making any code changes, update this file to reflect: new files added, changed architecture, new dependencies, updated config variables. Remove stale entries. Keep it concise.
 
 ## Code Conventions
 
