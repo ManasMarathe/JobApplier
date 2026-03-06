@@ -26,7 +26,7 @@ python test_gemini.py
 
 ## Architecture
 
-This is a fork of [Auto_job_applier_linkedIn](https://github.com/GodsScion/Auto_job_applier_linkedIn) configured for Manas Marathe. It uses Selenium/undetected-chromedriver to automate LinkedIn Easy Apply job applications.
+A Selenium-based automation tool by Manas Marathe that uses Selenium/undetected-chromedriver to automate LinkedIn Easy Apply job applications.
 
 ### Entry Points
 - `runAiBot.py` — main bot runner; drives the LinkedIn automation loop

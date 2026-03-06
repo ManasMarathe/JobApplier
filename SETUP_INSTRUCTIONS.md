@@ -184,7 +184,7 @@ python app.py
 
 ## 📚 Additional Resources
 
-- Original Project: https://github.com/GodsScion/Auto_job_applier_linkedIn
+- Original Project: https://github.com/ManasMarathe/JobApplier
 - Your Repository: https://github.com/ManasMarathe/JobApplier
 
 ---
