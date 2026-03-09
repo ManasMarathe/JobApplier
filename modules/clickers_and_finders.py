@@ -82,17 +82,31 @@ def multi_sel_noWait(driver: WebDriver, texts: list, actions: ActionChains = Non
 
 def boolean_button_click(driver: WebDriver, actions: ActionChains, text: str) -> None:
     '''
-    Tries to click on the boolean button with the given `text` text.
+    Tries to click on the boolean switch/toggle with the given label `text` (e.g. "Easy Apply").
+    Tries multiple selectors to cope with LinkedIn UI changes.
     '''
-    try:
-        list_container = driver.find_element(By.XPATH, './/h3[normalize-space()="'+text+'"]/ancestor::fieldset')
-        button = list_container.find_element(By.XPATH, './/input[@role="switch"]')
-        scroll_to_view(driver, button)
-        actions.move_to_element(button).click().perform()
-        buffer(click_gap)
-    except Exception as e:
-        print_lg("Click Failed! Didn't find '"+text+"'")
-        # print_lg(e)
+    xpath_strategies = [
+        # Original: h3 label inside fieldset
+        './/h3[normalize-space()="' + text + '"]/ancestor::fieldset//input[@role="switch"]',
+        # Any element with exact text, then ancestor fieldset
+        './/*[normalize-space(.)="' + text + '"]/ancestor::fieldset//input[@role="switch"]',
+        # Fieldset that contains the label text anywhere
+        './/fieldset[.//*[normalize-space(.)="' + text + '"]]//input[@role="switch"]',
+        # Label or span with text, then any ancestor that contains a switch
+        './/*[normalize-space(.)="' + text + '"]/ancestor::*[.//input[@role="switch"]]//input[@role="switch"]',
+        # Switch whose preceding sibling or ancestor contains the text (for flex/div layouts)
+        './/input[@role="switch"][ancestor::*[.//*[normalize-space(.)="' + text + '"]]]',
+    ]
+    for xpath in xpath_strategies:
+        try:
+            button = driver.find_element(By.XPATH, xpath)
+            scroll_to_view(driver, button)
+            actions.move_to_element(button).click().perform()
+            buffer(click_gap)
+            return
+        except Exception:
+            continue
+    print_lg("Click Failed! Didn't find '" + text + "'")
 
 # Find functions
 def find_by_class(driver: WebDriver, class_name: str, time: float=5.0) -> WebElement | Exception:
