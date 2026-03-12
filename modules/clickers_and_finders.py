@@ -82,17 +82,31 @@ def multi_sel_noWait(driver: WebDriver, texts: list, actions: ActionChains = Non
 
 def boolean_button_click(driver: WebDriver, actions: ActionChains, text: str) -> None:
     '''
-    Tries to click on the boolean button with the given `text` text.
+    Tries to click on the boolean switch/toggle with the given label `text` (e.g. "Easy Apply").
+    Tries multiple selectors to cope with LinkedIn UI changes.
     '''
-    try:
-        list_container = driver.find_element(By.XPATH, './/h3[normalize-space()="'+text+'"]/ancestor::fieldset')
-        button = list_container.find_element(By.XPATH, './/input[@role="switch"]')
-        scroll_to_view(driver, button)
-        actions.move_to_element(button).click().perform()
-        buffer(click_gap)
-    except Exception as e:
-        print_lg("Click Failed! Didn't find '"+text+"'")
-        # print_lg(e)
+    xpath_strategies = [
+        # Original: h3 label inside fieldset
+        './/h3[normalize-space()="' + text + '"]/ancestor::fieldset//input[@role="switch"]',
+        # Any element with exact text, then ancestor fieldset
+        './/*[normalize-space(.)="' + text + '"]/ancestor::fieldset//input[@role="switch"]',
+        # Fieldset that contains the label text anywhere
+        './/fieldset[.//*[normalize-space(.)="' + text + '"]]//input[@role="switch"]',
+        # Label or span with text, then any ancestor that contains a switch
+        './/*[normalize-space(.)="' + text + '"]/ancestor::*[.//input[@role="switch"]]//input[@role="switch"]',
+        # Switch whose preceding sibling or ancestor contains the text (for flex/div layouts)
+        './/input[@role="switch"][ancestor::*[.//*[normalize-space(.)="' + text + '"]]]',
+    ]
+    for xpath in xpath_strategies:
+        try:
+            button = driver.find_element(By.XPATH, xpath)
+            scroll_to_view(driver, button)
+            actions.move_to_element(button).click().perform()
+            buffer(click_gap)
+            return
+        except Exception:
+            continue
+    print_lg("Click Failed! Didn't find '" + text + "'")
 
 # Find functions
 def find_by_class(driver: WebDriver, class_name: str, time: float=5.0) -> WebElement | Exception:
@@ -168,13 +182,37 @@ def click_apply_button(driver: WebDriver) -> bool:
         
         # Alternative: Button with aria-label containing 'apply'
         ".//button[contains(@aria-label, 'apply') or contains(@aria-label, 'Apply')]",
+
+        # New Strategy: Any button with role="button" and contains "Apply" text
+        ".//button[contains(., 'Apply')]",
+
+        # New Strategy: Any element that looks like a button with aria-label
+        "//button[@aria-label and contains(translate(@aria-label, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), 'apply')]",
     ]
-    
-    for xpath in apply_button_xpaths:
+
+    print_lg("Attempting to click Apply button...")
+    for i, xpath in enumerate(apply_button_xpaths, 1):
+        print_lg(f"Trying strategy {i}/{len(apply_button_xpaths)}: {xpath[:70]}...")
         if try_xp(driver, xpath, click=True, wait_time=3.0):
-            print_lg(f"Successfully clicked Apply button using XPath: {xpath}")
+            print_lg(f"Successfully clicked Apply button using XPath strategy {i}")
             buffer(click_gap)
             return True
+        print_lg(f"Strategy {i} failed")
+
+    # Additional debugging: Log what buttons exist on the page
+    try:
+        all_buttons = driver.find_elements(By.TAG_NAME, "button")
+        print_lg(f"DEBUG: Found {len(all_buttons)} total buttons on page")
+        for idx, btn in enumerate(all_buttons[:10]):  # Log first 10 buttons
+            try:
+                btn_text = btn.text[:50] if btn.text else "[no text]"
+                btn_class = btn.get_attribute("class")[:60] if btn.get_attribute("class") else "[no class]"
+                btn_aria = btn.get_attribute("aria-label")[:60] if btn.get_attribute("aria-label") else "[no aria-label]"
+                print_lg(f"  Button {idx}: text='{btn_text}' class='{btn_class}' aria='{btn_aria}'")
+            except:
+                pass
+    except Exception as e:
+        print_lg(f"DEBUG: Could not enumerate buttons: {e}")
     
     print_lg("Failed to find and click Apply button with any selector")
     return False
