@@ -1083,7 +1083,27 @@ def apply_to_jobs(search_terms: list[str]) -> None:
                         try: 
                             try:
                                 errored = ""
-                                modal = find_by_class(driver, "jobs-easy-apply-modal")
+                                # Wait for the modal to appear after clicking apply button
+                                print_lg("Waiting for Easy Apply modal to appear...")
+                                buffer(2)  # Give the modal time to appear
+                                
+                                # Try to find the modal with retry logic
+                                modal = None
+                                modal_found = False
+                                for attempt in range(3):
+                                    try:
+                                        modal = find_by_class(driver, "jobs-easy-apply-modal", time=3.0)
+                                        modal_found = True
+                                        print_lg("Successfully found Easy Apply modal!")
+                                        break
+                                    except Exception as e:
+                                        print_lg(f"Attempt {attempt + 1} to find modal failed: {e}")
+                                        if attempt < 2:
+                                            buffer(1)
+                                        
+                                if not modal_found or modal is None:
+                                    raise Exception("Failed to locate Easy Apply modal after 3 attempts")
+                                
                                 wait_span_click(modal, "Next", 1)
                                 # if description != "Unknown":
                                 #     resume = create_custom_resume(description)
@@ -1105,11 +1125,31 @@ def apply_to_jobs(search_terms: list[str]) -> None:
                                         raise Exception("Seems like stuck in a continuous loop of next, probably because of new questions.")
                                     questions_list = answer_questions(modal, questions_list, work_location, job_description=description)
                                     if useNewResume and not uploaded: uploaded, resume = upload_resume(modal, default_resume_path)
-                                    try: next_button = modal.find_element(By.XPATH, './/span[normalize-space(.)="Review"]') 
-                                    except NoSuchElementException:  next_button = modal.find_element(By.XPATH, './/button[contains(span, "Next")]')
-                                    try: next_button.click()
-                                    except ElementClickInterceptedException: break    # Happens when it tries to click Next button in About Company photos section
-                                    buffer(click_gap)
+                                    
+                                    # Try to find and click Next/Review button with better error handling
+                                    next_button = None
+                                    try: 
+                                        next_button = modal.find_element(By.XPATH, './/span[normalize-space(.)="Review"]') 
+                                    except NoSuchElementException:
+                                        try:
+                                            next_button = modal.find_element(By.XPATH, './/button[contains(span, "Next")]')
+                                        except NoSuchElementException:
+                                            print_lg("Warning: Could not find Next or Review button, checking if form is complete...")
+                                            # Sometimes the form might be complete, try to find submit directly
+                                            next_button = None
+                                    
+                                    if next_button:
+                                        try: 
+                                            next_button.click()
+                                        except ElementClickInterceptedException: 
+                                            break    # Happens when it tries to click Next button in About Company photos section
+                                        except StaleElementReferenceException:
+                                            print_lg("Next button became stale, re-fetching...")
+                                            break  # Will retry the loop with fresh elements
+                                        buffer(click_gap)
+                                    else:
+                                        print_lg("No Next/Review button found, form may be complete, proceeding to review...")
+                                        break
 
                             except NoSuchElementException: errored = "nose"
                             finally:
@@ -1139,7 +1179,7 @@ def apply_to_jobs(search_terms: list[str]) -> None:
 
                         except Exception as e:
                             print_lg("Failed to Easy apply!")
-                            # print_lg(e)
+                            print_lg(f"Error details: {str(e)}")
                             critical_error_log("Somewhere in Easy Apply process",e)
                             failed_job(job_id, job_link, resume, date_listed, "Problem in Easy Applying", e, application_link, screenshot_name)
                             failed_count += 1

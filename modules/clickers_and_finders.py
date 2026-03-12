@@ -182,13 +182,37 @@ def click_apply_button(driver: WebDriver) -> bool:
         
         # Alternative: Button with aria-label containing 'apply'
         ".//button[contains(@aria-label, 'apply') or contains(@aria-label, 'Apply')]",
+        
+        # New Strategy: Any button with role="button" and contains "Apply" text
+        ".//button[contains(., 'Apply')]",
+        
+        # New Strategy: Any element that looks like a button with aria-label
+        "//button[@aria-label and contains(translate(@aria-label, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), 'apply')]",
     ]
     
-    for xpath in apply_button_xpaths:
+    print_lg("Attempting to click Apply button...")
+    for i, xpath in enumerate(apply_button_xpaths, 1):
+        print_lg(f"Trying strategy {i}/{len(apply_button_xpaths)}: {xpath[:70]}...")
         if try_xp(driver, xpath, click=True, wait_time=3.0):
-            print_lg(f"Successfully clicked Apply button using XPath: {xpath}")
+            print_lg(f"Successfully clicked Apply button using XPath strategy {i}")
             buffer(click_gap)
             return True
+        print_lg(f"Strategy {i} failed")
+    
+    # Additional debugging: Log what buttons exist on the page
+    try:
+        all_buttons = driver.find_elements(By.TAG_NAME, "button")
+        print_lg(f"DEBUG: Found {len(all_buttons)} total buttons on page")
+        for idx, btn in enumerate(all_buttons[:10]):  # Log first 10 buttons
+            try:
+                btn_text = btn.text[:50] if btn.text else "[no text]"
+                btn_class = btn.get_attribute("class")[:60] if btn.get_attribute("class") else "[no class]"
+                btn_aria = btn.get_attribute("aria-label")[:60] if btn.get_attribute("aria-label") else "[no aria-label]"
+                print_lg(f"  Button {idx}: text='{btn_text}' class='{btn_class}' aria='{btn_aria}'")
+            except:
+                pass
+    except Exception as e:
+        print_lg(f"DEBUG: Could not enumerate buttons: {e}")
     
     print_lg("Failed to find and click Apply button with any selector")
     return False
