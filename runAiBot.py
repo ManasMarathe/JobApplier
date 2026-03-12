@@ -837,7 +837,7 @@ def external_apply(pagination_element: WebElement, job_id: str, job_link: str, r
         print_lg("Easy apply failed I guess!")
         if pagination_element != None: return True, application_link, tabs_count
     try:
-        wait.until(EC.element_to_be_clickable((By.XPATH, ".//button[contains(@class,'jobs-apply-button') and contains(@class, 'artdeco-button--3')]"))).click() # './/button[contains(span, "Apply") and not(span[contains(@class, "disabled")])]'
+        click_apply_button(driver)  # Use improved Apply button clicking with multiple strategies
         wait_span_click(driver, "Continue", 1, True, False)
         windows = driver.window_handles
         tabs_count = len(windows)
@@ -1078,8 +1078,8 @@ def apply_to_jobs(search_terms: list[str]) -> None:
                         ##<
 
                     uploaded = False
-                    # Case 1: Easy Apply Button (primary Apply: id=jobs-apply-button-id, or legacy aria-label contains "Easy")
-                    if try_xp(driver, ".//button[@id='jobs-apply-button-id' or (contains(@class,'jobs-apply-button') and contains(@class, 'artdeco-button--3') and contains(@aria-label, 'Easy'))]"):
+                    # Case 1: Easy Apply Button (using improved click function with multiple strategies)
+                    if click_apply_button(driver):
                         try: 
                             try:
                                 errored = ""

@@ -1,0 +1,474 @@
+D:\coding\JobApplier\modules\ai\geminiConnections.py:1: FutureWarning: 
+
+All support for the `google.generativeai` package has ended. It will no longer be receiving 
+updates or bug fixes. Please switch to the `google.genai` package as soon as possible.
+See README for more details:
+
+https://github.com/google-gemini/deprecated-generative-ai-python/blob/main/README.md
+
+  import google.generativeai as genai
+IF YOU HAVE MORE THAN 10 TABS OPENED, PLEASE CLOSE OR BOOKMARK THEM! Or it's highly likely that application will just open browser and not do anything!
+SAFE MODE: Will login with a guest profile, browsing history will not be saved in the browser!
+Login successful!
+Loaded resume as AI context (3610 chars)
+Creating Anthropic Claude client...
+---- SUCCESSFULLY CREATED CLAUDE CLIENT! ----
+Using Model: claude-haiku-4-5
+---------------------------------------------
+Extracted about company info for AI: 'Manas Marathe'
+
+########################################################################################################################
+
+Date and Time: 2026-03-12 16:53:58.194689
+Cycle number: 1
+Currently looking for jobs posted within 'Past week' and sorting them by ''
+
+________________________________________________________________________________________________________________________
+
+
+>>>> Now searching for "Java Developer" <<<<
+
+
+Setting search location as: "India"
+Click Failed! Didn't find 'Easy Apply'
+Setting the preferences failed!
+
+-@-
+
+Trying to Apply to "Java Developer | Easy Home Finance Limite" job. Job ID: 4372602098
+Failed to scroll to About Company!
+HR info was not given for "Java Developer" with Job ID: 4372602098!
+Failed to calculate the date posted!
+cannot access local variable 'jobs_top_card' where it is not associated with a value
+
+About the job
+Designs, develops, tests, and maintains scalable software applications while collaborating with cross-functional teams to deliver high-quality solutions.
+Key Responsibilities:
+Develop, test, and deploy software applications as per requirements.
+Write clean, efficient, and maintainable code following best practices.
+Collaborate with product, design, and QA teams to deliver features on time.
+Debug, troubleshoot, and resolve application issues.
+Participate in code reviews and continuous improvement initiatives.
+Required Skills & Experience:
+2–5 years of experience in software development.
+Proficiency in one or more programming languages such as Java, Python, JavaScript, or C++.
+Strong understanding of data structures, algorithms, and OOP concepts.
+Experience with REST APIs and database technologies (SQL/NoSQL).
+Familiarity with version control systems like Git.
+Preferred Skills:
+Exposure to cloud platforms (AWS, Azure, or GCP).
+Knowledge of Agile/Scrum methodologies.
+Experience with CI/CD pipelines.
+
+Experience required 5 > Current Experience 2. Skipping this job!
+
+
+-@-
+
+Job card element went stale (page refreshed), skipping to next job.
+
+-@-
+
+Job card element went stale (page refreshed), skipping to next job.
+
+-@-
+
+Job card element went stale (page refreshed), skipping to next job.
+
+-@-
+
+Job card element went stale (page refreshed), skipping to next job.
+
+-@-
+
+Job card element went stale (page refreshed), skipping to next job.
+
+-@-
+
+Job card element went stale (page refreshed), skipping to next job.
+
+-@-
+
+Job card element went stale (page refreshed), skipping to next job.
+
+-@-
+
+Job card element went stale (page refreshed), skipping to next job.
+
+-@-
+
+Job card element went stale (page refreshed), skipping to next job.
+
+-@-
+
+Job card element went stale (page refreshed), skipping to next job.
+
+-@-
+
+Job card element went stale (page refreshed), skipping to next job.
+
+-@-
+
+Job card element went stale (page refreshed), skipping to next job.
+
+-@-
+
+Job card element went stale (page refreshed), skipping to next job.
+
+-@-
+
+Job card element went stale (page refreshed), skipping to next job.
+
+-@-
+
+Job card element went stale (page refreshed), skipping to next job.
+
+-@-
+
+Job card element went stale (page refreshed), skipping to next job.
+
+-@-
+
+Job card element went stale (page refreshed), skipping to next job.
+
+-@-
+
+Job card element went stale (page refreshed), skipping to next job.
+
+-@-
+
+Job card element went stale (page refreshed), skipping to next job.
+
+-@-
+
+Job card element went stale (page refreshed), skipping to next job.
+
+-@-
+
+Job card element went stale (page refreshed), skipping to next job.
+
+-@-
+
+Job card element went stale (page refreshed), skipping to next job.
+
+-@-
+
+Job card element went stale (page refreshed), skipping to next job.
+
+-@-
+
+Job card element went stale (page refreshed), skipping to next job.
+
+>-> Now on Page 2 
+
+
+-@-
+
+Trying to Apply to "Python Developer | Brace Infotech Private Lt" job. Job ID: 4376999663
+Time Posted: Hyderabad, Telangana, India · 2 weeks ago · Over 100 applicants
+Promoted by hirer · Actively reviewing applicants
+Extracted skills using claude AI
+Easy apply failed I guess!
+
+-@-
+
+Trying to Apply to "Scala Developer | LT" job. Job ID: 4364568723
+HR info was not given for "Scala Developer" with Job ID: 4364568723!
+Time Posted: Bengaluru, Karnataka, India · 3 weeks ago · 62 applicants
+Promoted by hirer · Actively reviewing applicants
+
+About the job
+About the Role
+
+
+The role involves hands-on knowledge of SPARK, Scala, Java, and RDBMS like MS-SQL/Oracle, along with an understanding of CI/CD tools like uDeploy. Knowledge of Vanguard and its landscape will be an additional advantage.
+
+
+Responsibilities
+
+
+Development & Optimization: Develop, test, and deploy production-grade Spark applications in Scala, ensuring optimal performance, scalability, and resource utilization.
+Technical Leadership: Provide technical leadership and guidance to a team of data engineers, fostering a culture of technical excellence, collaboration, and continuous improvement.
+Code Review & Best Practices: Conduct rigorous code reviews, establish coding standards, and enforce best practices for Spark Scala development, data governance, and data quality.
+Performance Tuning: Identify and resolve performance bottlenecks in Spark applications through advanced tuning techniques (e.g., shuffling, partitioning, memory management, caching).
+
+ Qualifications
+
+
+Total Experience: 6-8 years
+Notice Period: Immediate to 30 days
+
+ Required Skills
+
+
+SPARK
+Scala
+Java
+RDBMS like MS-SQL/Oracle
+
+ Preferred Skills
+
+
+Knowledge of CI/CD tools like uDeploy
+Cloud OpenShift/AWS
+
+Experience required 6 > Current Experience 2. Skipping this job!
+
+
+-@-
+
+Trying to Apply to "Data Engineer | Scouti" job. Job ID: 4383568225
+HR info was not given for "Data Engineer" with Job ID: 4383568225!
+Time Posted: Bengaluru South, Karnataka, India · 16 minutes ago · 1 applicant
+No response insights available yet
+
+About the job
+We're looking for Data Engineers!
+
+Responsibilities
+
+Work with analytics teams to ensure data is clean, structured, and accessible for analysis and reporting
+Implement data quality and governance frameworks to ensure data integrity across the organization
+Contribute to data exploration and analysis projects by delivering robust, reusable data pipelines that support deep data analysis
+Design, implement, and optimize scalable data architectures, including data lakes, data warehouses, and real-time streaming solutions
+Develop and maintain ETL/ELT pipelines to ensure efficient data flow from multiple sources
+Leverage automation to streamline data ingestion, processing, and integration tasks
+Develop and maintain scripts for data automation and orchestration, ensuring timely and accurate delivery of data products
+Work closely with DevOps and Cloud teams to ensure data infrastructure is secure, reliable, and scalable
+
+Qualifications
+
+Proficient in building and maintaining ETL/ELT processes using tools such as Apache Airflow, DBT, Talend, or custom scripts in Python, SQL, NoSQL etc
+Analytics: Strong understanding of data analytics concepts, with experience in creating data models and working closely with BI/Analytics teams
+Automation: Familiarity with data automation tools (eg, Apache Airflow, Prefect) and scripting (Python, Shell, etc) to automate data workflows
+Data Architecture: Proficiency in designing and maintaining data lakes, warehouses, and real-time streaming architectures using technologies like AWS/GCP/Azure, Hadoop, Spark, Kafka, etc
+Soft Skills:Excellent problem-solving skills and ability to work independently and as part of a team
+Ability to collaborate cross-functionally with analytics, business intelligence, and product teams
+Strong communication skills with the ability to translate complex technical concepts for non-technical stakeholders
+Attention to detail and commitment to data quality and governance
+
+(*Note: This is a requirement for one of Scout's clients)
+
+Skills: automation,data,analytics
+
+Couldn't find experience requirement in About the Job!
+Extracted skills using claude AI
+Easy apply failed I guess!
+
+-@-
+
+Trying to Apply to "Full Stack Engineer | Bread Financia" job. Job ID: 4373662378
+Time Posted: Bengaluru, Karnataka, India · 3 weeks ago · Over 100 applicants
+Promoted by hirer · Actively reviewing applicants
+
+About the job
+The Engineer, 4 provides strategic leadership focused on driving the architecture, design, and delivery of advanced financial technology systems. This position requires deep technical mastery, mentorship of engineers and collaboration across senior leadership. Engineers in this role lead innovation, optimize processes, and ensure solutions align with business objectives and enterprise standards and architect and lead full stack development across the SDLC, enhancing frontend, backend, and UI/UX components
+
+Couldn't find experience requirement in About the Job!
+Extracted skills using claude AI
+Easy apply failed I guess!
+
+-@-
+
+Trying to Apply to "Jr. Pega Developer | Glidewell Denta" job. Job ID: 4365857917
+HR info was not given for "Jr. Pega Developer" with Job ID: 4365857917!
+Time Posted: India · Reposted 2 weeks ago · Over 100 applicants
+Promoted by hirer · Actively reviewing applicants
+
+About the job
+Essential Functions:
+Monitor BIX extractors and PDC as part of daily production Monitoring 
+Use Pega tools such as Tracer, Clipboard, and logs to troubleshoot issues. 
+Assist in investigating application issues under supervision. 
+Perform unit testing for assigned development tasks. 
+Fix low to medium complexity defects during QA and UAT cycles. 
+Support regression testing activities. 
+Assist in developing and configuring Pega applications including case types, stages, steps, and flows. 
+Configure decision tables, decision trees, validations, and when rules. 
+Follow Pega guardrails and organizational standards. 
+Participate in sprint ceremonies and team meetings. 
+Continuously enhance skills through training and certifications. 
+Participate in peer reviews and knowledge transfer sessions. 
+Document configuration changes and technical details. 
+
+
+Education and Experience:
+Bachelor’s degree in Computer Science, Information Technology, Engineering, or related field. 
+Willingness to learn and work on the Pega platform.
+
+Couldn't find experience requirement in About the Job!
+Extracted skills using claude AI
+Easy apply failed I guess!
+
+-@-
+
+Trying to Apply to "Nodejs Developer | Deloitt" job. Job ID: 4380268224
+HR info was not given for "Nodejs Developer" with Job ID: 4380268224!
+Time Posted: Greater Bengaluru Area · 6 days ago · Over 100 applicants
+Promoted by hirer · Actively reviewing applicants
+
+About the job
+Your potential, unleashed.
+ India’s impact on the global economy has increased at an exponential rate and Deloitte presents an opportunity to unleash and realise your potential amongst cutting edge leaders, and organisations shaping the future of the region, and indeed, the world beyond.
+ At Deloitte, your whole self to work, every day. Combine that with our drive to propel with purpose and you have the perfect playground to collaborate, innovate, grow, and make an impact that matters.
+ The team
+
+The Digital Excellence Centre is responsible for building products and platforms for Deloitte India that focuses on providing extraordinary customer experience by putting design thinking with trailblazing technology in the center of what they do. The diverse team consists of subject matter experts, technology specialists, quality engineers, user experience researchers & designers, data scientists and product managers
+
+Your work profile
+ As a Sr. Executive in our DEC Team you’ll build and nurture positive working relationships with teams and clients with the intention to exceed client expectations: -
+ Responsibilities:
+Building products/assets which adhere to secure coding practices.
+Translating requirements into high-quality code and taking ownership of the features for the lifecycle of the project.
+Ability to demonstrate proficiency in structured and well-documented code and related artefacts.
+Optimising components for maximum performance and automated testing.
+Collaboration with UI/UX designers to design, develop, test & deploy solutions based on industry best practices.
+Build solutions, resolve bugs & implement scalable solutions.
+Creating technical documents and training staff.
+Propose enhancements to features.
+Provide a timely solution to critical bugs as per the agreed-upon timeliness of the project.
+ As a prospective candidate, you should possess:
+  Have a bachelor’s degree or relevant work experience in Computer Science or a related technical discipline.
+Have minimum 2-3 years of relevant development experience in Angular JS or ReactJS, any middleware tech (Java/.NET) and any one database (MySQL, MS SQL, Oracle, MongoDB, Cassandra, PostgreSQL).
+Have a very good understanding of OOPS concepts and Design patterns.
+Have a strong working knowledge of Web Services Technologies: JSON and REST.
+Be familiar with MySQL/MSSQL/Oracle/MongoDB/Cassandra/PostgreSQL database, API design & architecture.
+Having experience in Node.js is an added bonus.
+Be proficient knowledge of code versioning tools such as GIT & CI/CD.
+Have experience in working with high-performing development teams using Agile/Scrum methodologies.
+Be strong in analytical and logical skills.
+Have excellent written and verbal communication skills
+ Desired qualifications
+Bachelor's degree in Computer Science, Software Engineering, or a related field.
+Advanced degree preferred but not required
+ Location and way of working
+Base location: Bangalore
+This profile does not involve extensive travel for work.
+Hybrid is our default way of working. Each domain has customised the hybrid approach to their unique needs.
+ Your role as a Sr. Executive
+ We expect our people to embrace and live our purpose by challenging themselves to identify issues that are most important for our clients, our people, and for society.
+ In addition to living our purpose, Senior Executive across our organization must strive to be:
+  Inspiring - Leading with integrity to build inclusion and motivation
+Committed to creating purpose - Creating a sense of vision and purpose
+Agile - Achieving high-quality results through collaboration and Team unity
+Skilled at building diverse capability - Developing diverse capabilities for the future
+Persuasive / Influencing - Persuading and influencing stakeholders
+Collaborating - Partnering to build new solutions
+Delivering value - Showing commercial acumen
+Committed to expanding business - Leveraging new business opportunities
+Analytical Acumen - Leveraging data to recommend impactful approach and solutions through the power of analysis and visualization
+Effective communication – Must be well abled to have well-structured and well-articulated conversations to achieve win-win possibilities
+Engagement Management / Delivery Excellence - Effectively managing engagement(s) to ensure timely and proactive execution as well as course correction for
+the success of engagement(s)
+Managing change - Responding to changing environment with resilience
+Managing Quality & Risk - Delivering high quality results and mitigating risks with utmost integrity and precision
+Strategic Thinking & Problem Solving - Applying strategic mindset to solve business issues and complex problems
+Tech Savvy - Leveraging ethical technology practices to deliver high impact for clients and for Deloitte
+Empathetic leadership and inclusivity - creating a safe and thriving environment where everyone's valued for who they are, use empathy to understand others to adapt our behaviours and attitudes to become more inclusive. 
+ How you’ll grow
+ Connect for impact
+ Our exceptional team of professionals across the globe are solving some of the world’s most complex business problems, as well as directly supporting our communities, the planet, and each other. Know more in our Global Impact Report and our India Impact Report.
+ Empower to lead
+ You can be a leader irrespective of your career level. Our colleagues are characterised by their ability to inspire, support, and provide opportunities for people to deliver their best and grow both as professionals and human beings. Know more about Deloitte and our One Young World partnership.
+ Inclusion for all
+ At Deloitte, people are valued and respected for who they are and are trusted to add value to their clients, teams and communities in a way that reflects their own unique capabilities. Know more about everyday steps that you can take to be more inclusive. At Deloitte, we believe in the unique skills, attitude and potential each and every one of us brings to the table to make an impact that matters.
+    Drive your career
+ At Deloitte, you are encouraged to take ownership of your career. We recognise there is no one size fits all career path, and global, cross-business mobility and up / re-skilling are all within the range of possibilities to shape a unique and fulfilling career. Know more about Life at Deloitte.
+  Everyone’s welcome… entrust your happiness to us 
+ Our workspaces and initiatives are geared towards your 360-degree happiness. This includes specific needs you may have in terms of accessibility, flexibility, safety and security, and caregiving. Here’s a glimpse of things that are in store for you. 
+  Interview tips
+ We want job seekers exploring opportunities at Deloitte to feel prepared, confident and comfortable. To help you with your interview, we suggest that you do your research, know some background about the organisation and the business area you’re applying to. Check out recruiting tips from Deloitte professionals.
+
+Contains bad word ".NET". Skipping this job!
+
+
+-@-
+
+Trying to Apply to "Software Test Engineer I | ConnectWis" job. Job ID: 4378399362
+HR info was not given for "Software Test Engineer I" with Job ID: 4378399362!
+Time Posted: Pune District, Maharashtra, India · 1 week ago · Over 100 applicants
+Promoted by hirer · Actively reviewing applicants
+Extracted skills using claude AI
+Easy apply failed I guess!
+
+-@-
+
+Trying to Apply to "Software Engineer I (Data Engineer) | Precisel" job. Job ID: 4361602213
+Time Posted: India · Reposted 2 weeks ago · Over 100 applicants
+Promoted by hirer · No response insights available yet
+Extracted skills using claude AI
+Easy apply failed I guess!
+
+-@-
+
+Trying to Apply to "UI Developer | Movat" job. Job ID: 4374486331
+Failed to find an element with given classes
+Skipping this job!
+
+
+-@-
+
+Browser window closed or session is invalid. Ending application process.
+Message: invalid session id
+Stacktrace:
+	chromedriver!GetHandleVerifier [0x7ff6211210b5+14cc5]
+	chromedriver!GetHandleVerifier [0x7ff621121120+14d30]
+	chromedriver!(No symbol) [0x7ff620e8d956]
+	chromedriver!(No symbol) [0x7ff620ed8766]
+	chromedriver!(No symbol) [0x7ff620f10272]
+	chromedriver!(No symbol) [0x7ff620f0a4d1]
+	chromedriver!(No symbol) [0x7ff620f09783]
+	chromedriver!(No symbol) [0x7ff620e56585]
+	chromedriver!GetHandleVerifier [0x7ff621425ded+3199fd]
+	chromedriver!GetHandleVerifier [0x7ff6214204cd+3140dd]
+	chromedriver!GetHandleVerifier [0x7ff6214429ca+3365da]
+	chromedriver!GetHandleVerifier [0x7ff62113ca55+30665]
+	chromedriver!GetHandleVerifier [0x7ff621145bac+397bc]
+	chromedriver!(No symbol) [0x7ff620e5534a]
+	chromedriver!GetHandleVerifier [0x7ff621579888+46d498]
+	KERNEL32!BaseThreadInitThunk [0x7ffa6b6ee8d7+17]
+	ntdll!RtlUserThreadStart [0x7ffa6d36c40c+2c]
+
+Browser window closed or session is invalid. Exiting.
+Message: invalid session id
+Stacktrace:
+	chromedriver!GetHandleVerifier [0x7ff6211210b5+14cc5]
+	chromedriver!GetHandleVerifier [0x7ff621121120+14d30]
+	chromedriver!(No symbol) [0x7ff620e8d956]
+	chromedriver!(No symbol) [0x7ff620ed8766]
+	chromedriver!(No symbol) [0x7ff620f10272]
+	chromedriver!(No symbol) [0x7ff620f0a4d1]
+	chromedriver!(No symbol) [0x7ff620f09783]
+	chromedriver!(No symbol) [0x7ff620e56585]
+	chromedriver!GetHandleVerifier [0x7ff621425ded+3199fd]
+	chromedriver!GetHandleVerifier [0x7ff6214204cd+3140dd]
+	chromedriver!GetHandleVerifier [0x7ff6214429ca+3365da]
+	chromedriver!GetHandleVerifier [0x7ff62113ca55+30665]
+	chromedriver!GetHandleVerifier [0x7ff621145bac+397bc]
+	chromedriver!(No symbol) [0x7ff620e5534a]
+	chromedriver!GetHandleVerifier [0x7ff621579888+46d498]
+	KERNEL32!BaseThreadInitThunk [0x7ffa6b6ee8d7+17]
+	ntdll!RtlUserThreadStart [0x7ffa6d36c40c+2c]
+
+
+
+Total runs:                     1
+Jobs Easy Applied:              0
+External job links collected:   0
+                              ----------
+Total applied or collected:     0
+
+Failed jobs:                    0
+Irrelevant jobs skipped:        4
+
+
+Keep up with the progress. You got this.
+
+
+Best regards,
+Manas Marathe
+https://www.linkedin.com/in/manas-marathe-129942123/
+
+
+Closing the browser...
+Closed claude AI client.

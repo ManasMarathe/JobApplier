@@ -137,14 +137,61 @@ def text_input_by_ID(driver: WebDriver, id: str, value: str, time: float=5.0) ->
     username_field.send_keys(Keys.CONTROL + "a")
     username_field.send_keys(value)
 
-def try_xp(driver: WebDriver, xpath: str, click: bool=True) -> WebElement | bool:
+def try_xp(driver: WebDriver, xpath: str, click: bool=True, wait_time: float=5.0) -> WebElement | bool:
+    '''
+    Tries to find and optionally click an element using XPath.
+    - Waits up to `wait_time` seconds for the element to be present and clickable.
+    - Returns the element if found (and not clicking), True if clicked, False if not found.
+    '''
     try:
         if click:
-            driver.find_element(By.XPATH, xpath).click()
+            # Wait for element to be clickable before clicking
+            element = WebDriverWait(driver, wait_time).until(
+                EC.element_to_be_clickable((By.XPATH, xpath))
+            )
+            scroll_to_view(driver, element)
+            element.click()
             return True
         else:
-            return driver.find_element(By.XPATH, xpath)
-    except: return False
+            # Just wait for presence
+            element = WebDriverWait(driver, wait_time).until(
+                EC.presence_of_element_located((By.XPATH, xpath))
+            )
+            return element
+    except Exception as e:
+        return False
+
+def click_apply_button(driver: WebDriver) -> bool:
+    '''
+    Clicks the Apply button on LinkedIn job posting.
+    Tries multiple XPath strategies to handle LinkedIn UI variations and Easy Apply vs External Apply buttons.
+    Returns True if clicked, False if not found.
+    '''
+    apply_button_xpaths = [
+        # Primary: Modern Easy Apply button with ID
+        ".//button[@id='jobs-apply-button-id']",
+        
+        # Legacy: Apply button with Easy Apply aria-label
+        ".//button[contains(@class,'jobs-apply-button') and contains(@class, 'artdeco-button--3') and contains(@aria-label, 'Easy')]",
+        
+        # Generic: Apply button with class (without Easy label requirement)
+        ".//button[contains(@class,'jobs-apply-button') and contains(@class, 'artdeco-button--3')]",
+        
+        # Fallback: Any button containing 'Apply' text in a span
+        ".//button[.//span[contains(normalize-space(.), 'Apply')]][@aria-label or @class]",
+        
+        # Alternative: Button with aria-label containing 'apply'
+        ".//button[contains(@aria-label, 'apply') or contains(@aria-label, 'Apply')]",
+    ]
+    
+    for xpath in apply_button_xpaths:
+        if try_xp(driver, xpath, click=True, wait_time=3.0):
+            print_lg(f"Successfully clicked Apply button using XPath: {xpath}")
+            buffer(click_gap)
+            return True
+    
+    print_lg("Failed to find and click Apply button with any selector")
+    return False
 
 def try_linkText(driver: WebDriver, linkText: str) -> WebElement | bool:
     try:    return driver.find_element(By.LINK_TEXT, linkText)
