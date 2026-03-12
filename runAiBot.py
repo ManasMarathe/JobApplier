@@ -1177,13 +1177,27 @@ def apply_to_jobs(search_terms: list[str]) -> None:
                                     if errored == "nose": raise Exception("Failed to click Submit application 😑")
 
 
+                        except StaleElementReferenceException as e:
+                            print_lg("Easy Apply: Modal or element became stale, job may have been refreshed")
+                            print_lg(f"Error details: {str(e)}")
+                            critical_error_log("Stale element in Easy Apply process",e)
+                            failed_job(job_id, job_link, resume, date_listed, "Problem in Easy Applying - Stale Element", e, application_link, screenshot_name)
+                            failed_count += 1
+                            try:
+                                discard_job()
+                            except:
+                                pass  # Modal might be gone
+                            continue
                         except Exception as e:
                             print_lg("Failed to Easy apply!")
                             print_lg(f"Error details: {str(e)}")
                             critical_error_log("Somewhere in Easy Apply process",e)
                             failed_job(job_id, job_link, resume, date_listed, "Problem in Easy Applying", e, application_link, screenshot_name)
                             failed_count += 1
-                            discard_job()
+                            try:
+                                discard_job()
+                            except:
+                                pass  # Modal might be gone
                             continue
                     else:
                         # Case 2: Apply externally
